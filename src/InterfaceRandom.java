@@ -251,9 +251,9 @@ public class InterfaceRandom extends javax.swing.JFrame {
 
                     int note;
                     if (barStart == 0) {
-                        note = notes[random(0, 1) * 3];
+                        note = notes[random(0, 1) * 3]; //First note of the piece must be the root of the chord (in either octave)
                     } else {
-                        note = notes[random(0, 5)];
+                        note = notes[random(0, 5)]; //First note of the bar must be a note from the chord
                     }
                     melody.add(createNoteOnEvent(scaleNote(tonic, note, major) + 12, barStart + pos, velocity));
                     pos = random(1, 4) * 32;
