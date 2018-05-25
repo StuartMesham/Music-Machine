@@ -195,9 +195,9 @@ public class InterfaceCheesy extends javax.swing.JFrame {
         boolean major = jComboBox2.getSelectedIndex() == 0;
         int barStart = 0;
 
-        for (int n = 60; n < 62; n++) {
-            for (int l = 0; l < 2; l++) {
-                for (int i = 0; i < chords.length; i++) { // for each chord
+        for (int tonic = 60; tonic < 62; tonic++) { //Used to modulate half way though the piece
+            for (int l = 0; l < 2; l++) { //Play each chord twice
+                for (int i = 0; i < chords.length; i++) { // for each chord/bar
 
                     int[] notes = new int[6]; //Array holding note number of 2 8ves of chord
                     for (int j = 0; j < 2; j++) {
@@ -209,10 +209,9 @@ public class InterfaceCheesy extends javax.swing.JFrame {
                             }
                         }
                     }
-                    int time = barStart;
+                    
                     //Melody
                     int pos = 0;
-                    int[] melodyNotes = new int[metre];
 
                     int note;
                     if (barStart == 0) {
@@ -220,12 +219,12 @@ public class InterfaceCheesy extends javax.swing.JFrame {
                     } else {
                         note = notes[random(0, 5)];
                     }
-                    melody.add(createNoteOnEvent(scaleNote(n, note, major) + 12, barStart + pos, velocity));
+                    melody.add(createNoteOnEvent(scaleNote(tonic, note, major) + 12, barStart + pos, velocity));
                     pos = random(1, 2) * 32; //Hold the first note for either 1 or 2 beats
-                    melody.add(createNoteOffEvent(scaleNote(n, note, major) + 12, barStart + pos));
+                    melody.add(createNoteOffEvent(scaleNote(tonic, note, major) + 12, barStart + pos));
 
                     while (pos < metre * 32) {
-                        int subDivision = (int) Math.pow(2, random(1, 2)); //Subdivided into 1, 2 or 4
+                        int subDivision = (int) Math.pow(2, random(0, 2)); //Subdivided into 1, 2 or 4
                         for (int k = 0; k < subDivision; k++) {
                             if (pos % 32 == 0) { //If on a beat jump to closest note of chord
                                 note = closest(note, notes);
@@ -234,23 +233,26 @@ public class InterfaceCheesy extends javax.swing.JFrame {
                             } else {
                                 note--;
                             }
-                            melody.add(createNoteOnEvent(scaleNote(n, note, major) + 12, barStart + pos, velocity));
+                            melody.add(createNoteOnEvent(scaleNote(tonic, note, major) + 12, barStart + pos, velocity));
                             pos += 32/subDivision;
-                            melody.add(createNoteOffEvent(scaleNote(n, note, major) + 12, barStart + pos));
+                            melody.add(createNoteOffEvent(scaleNote(tonic, note, major) + 12, barStart + pos));
                         }
                     }
 
                     //Accompaniment
+                    int time = barStart;
                     for (int k = 0; k < metre; k++) {
                         for (int j = 1; j < 3; j++) {
-                            accompaniment.add(createNoteOnEvent(scaleNote(n, notes[j], major), time, velocity));
-                            accompaniment.add(createNoteOffEvent(scaleNote(n, notes[j], major), time + 32));
+                            accompaniment.add(createNoteOnEvent(scaleNote(tonic, notes[j], major), time, velocity));
+                            accompaniment.add(createNoteOffEvent(scaleNote(tonic, notes[j], major), time + 32));
                         }
                         time += 16;
-                        accompaniment.add(createNoteOnEvent(scaleNote(n, notes[0], major), time, velocity));
-                        accompaniment.add(createNoteOffEvent(scaleNote(n, notes[0], major), time + 16));
+                        accompaniment.add(createNoteOnEvent(scaleNote(tonic, notes[0], major), time, velocity));
+                        accompaniment.add(createNoteOffEvent(scaleNote(tonic, notes[0], major), time + 16));
                         time += 16;
                     }
+                    
+                    //Move to next bar
                     barStart += 32 * metre;
                 }
             }

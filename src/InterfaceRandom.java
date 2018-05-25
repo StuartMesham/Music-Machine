@@ -234,10 +234,10 @@ public class InterfaceRandom extends javax.swing.JFrame {
 //            }
 //            accompaniment2[i] = new Note(start * acsub, random(start, (32 * metre) / acsub) * acsub, notes2[i], aVelocity);
 //        }
-
-        for (int n = 60; n < 62; n++) {
-            for (int l = 0; l < 2; l++) {
-                for (int i = 0; i < chords.length; i++) { // for each chord
+    
+        for (int tonic = 60; tonic < 62; tonic++) { //Used to modulate half way though the piece
+            for (int l = 0; l < 2; l++) { //Play each chord twice
+                for (int i = 0; i < chords.length; i++) { // for each chord/bar
 
                     int[] notes = new int[6]; //Array holding note number of 2 8ves of chord
                     for (int j = 0; j < 2; j++) {
@@ -245,10 +245,9 @@ public class InterfaceRandom extends javax.swing.JFrame {
                             notes[k + j * 3] = k * 2 + j * 7 + chords[i];
                         }
                     }
-                    int time = barStart;
+                    
                     //Melody
                     int pos = 0;
-                    int[] melodyNotes = new int[metre];
 
                     int note;
                     if (barStart == 0) {
@@ -256,9 +255,9 @@ public class InterfaceRandom extends javax.swing.JFrame {
                     } else {
                         note = notes[random(0, 5)];
                     }
-                    melody.add(createNoteOnEvent(scaleNote(n, note, major) + 12, barStart + pos, velocity));
+                    melody.add(createNoteOnEvent(scaleNote(tonic, note, major) + 12, barStart + pos, velocity));
                     pos = random(1, 4) * 32;
-                    melody.add(createNoteOffEvent(scaleNote(n, note, major) + 12, barStart + pos));
+                    melody.add(createNoteOffEvent(scaleNote(tonic, note, major) + 12, barStart + pos));
 
                     while (pos < metre * 32) {
                         int subDivision = (int) Math.pow(2, random(0, 2));
@@ -270,13 +269,14 @@ public class InterfaceRandom extends javax.swing.JFrame {
                             } else {
                                 note--;
                             }
-                            melody.add(createNoteOnEvent(scaleNote(n, note, major) + 12, barStart + pos, velocity));
+                            melody.add(createNoteOnEvent(scaleNote(tonic, note, major) + 12, barStart + pos, velocity));
                             pos += 32 / subDivision;
-                            melody.add(createNoteOffEvent(scaleNote(n, note, major) + 12, barStart + pos));
+                            melody.add(createNoteOffEvent(scaleNote(tonic, note, major) + 12, barStart + pos));
                         }
                     }
 
                     //Accompaniment
+//                    int time = barStart;
 //                    for (int k = 0; k < metre; k++) {
 //                        for (int j = 1; j < 3; j++) {
 //                            accompaniment.add(createNoteOnEvent(scaleNote(n, notes[j], major), time, velocity));
@@ -296,8 +296,8 @@ public class InterfaceRandom extends javax.swing.JFrame {
 //                    }
                     for (int k = 0; k < metre; k++) {
                         for (int j = 0; j < accompaniment3.size(); j++) {
-                            accompaniment.add(createNoteOnEvent(scaleNote(n, accompaniment3.get(j).getPitch() + chords[i], major), accompaniment3.get(j).getStart() + barStart, accompaniment3.get(j).getVelocity()));
-                            accompaniment.add(createNoteOffEvent(scaleNote(n, accompaniment3.get(j).getPitch() + chords[i], major), accompaniment3.get(j).getEnd() + barStart));
+                            accompaniment.add(createNoteOnEvent(scaleNote(tonic, accompaniment3.get(j).getPitch() + chords[i], major), accompaniment3.get(j).getStart() + barStart, accompaniment3.get(j).getVelocity()));
+                            accompaniment.add(createNoteOffEvent(scaleNote(tonic, accompaniment3.get(j).getPitch() + chords[i], major), accompaniment3.get(j).getEnd() + barStart));
                         }
                     }
                     barStart += 32 * metre;
